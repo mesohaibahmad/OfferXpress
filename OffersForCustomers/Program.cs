@@ -49,6 +49,10 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+
 //builder.Services.Configure<RequestLocalizationOptions>(options =>
 //{
 //    var supportedCultures = new CultureInfo[]
