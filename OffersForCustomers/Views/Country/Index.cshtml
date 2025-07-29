@@ -1,0 +1,32 @@
+﻿@model IEnumerable<OffersForCustomers.Models.Countries>
+
+@{
+    ViewData["Title"] = "Countries";
+}
+
+<h1>Countries</h1>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">@ViewBag.Message</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Country Name</th>
+            <th>Default VAT</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var country in Model)
+        {
+            <tr>
+                <td>@country.Id</td>
+                <td>@country.CountryName</td>
+                <td>@country.DefaultVAT</td>
+            </tr>
+        }
+    </tbody>
+</table>

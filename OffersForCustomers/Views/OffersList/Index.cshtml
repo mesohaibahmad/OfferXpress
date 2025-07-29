@@ -1,0 +1,357 @@
+﻿@using OffersForCustomers.Models;
+@using OffersForCustomers.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
+@using OffersForCustomers.Services
+@using Nancy.Json
+@inject IStringLocalizer<HomeController> Localizer
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ICountryListService CountryListService
+
+ @{
+     
+     string currCul = "";
+    string curCulName = "English"; // Default to English
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+
+    if (requestCulture.RequestCulture.Culture.Name == "de-GR")
+    {
+        curCulName = "German";
+        currCul = "https://cdn.datatables.net/plug-ins/2.1.8/i18n/de-DE.json";
+    }
+    else if (requestCulture.RequestCulture.Culture.Name == "sl-Sl")
+    {
+        curCulName = "Slovenian";
+        currCul = "https://cdn.datatables.net/plug-ins/1.12.1/i18n/sl.json";
+    }
+    else if (requestCulture.RequestCulture.Culture.Name == "it-IT")
+    {
+        curCulName = "Italian";
+        currCul = "https://cdn.datatables.net/plug-ins/2.1.8/i18n/it-IT.json";
+    }
+   }
+ 
+ @{
+     var serializer = new JavaScriptSerializer();
+ }
+@model  List<OffersForCustomers.Models.Offers>;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var countries = await CountryListService.GetCountries();
+    var selectedCountryId = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("SelectedCountryId"));
+
+    var notr = 0;
+}
+
+<style>
+
+    a {
+        cursor: pointer !important
+    }
+
+    #tblpayment .user-block img {
+        width: 35px;
+        height: 30px;
+        float: left;
+    }
+
+    .flexfilter {
+        display: inline-flex
+    }
+</style>
+<section class="content-header">
+    <h1>
+        @Localizer["OfferList"]
+    </h1>
+    @* <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> @Localizer["Home"]</a></li>
+        <li><a href="#">@Localizer["Payment Requests"]</a></li>
+    </ol> *@
+</section>
+
+<section class="content" id="appOffer">
+    <div>
+    <div class="box">
+    <div class="box-header">
+
+        <div class="box-tools">
+        </div>
+    </div>
+    <div class="box-body">
+      
+     <div class="row align-items-center">
+    <div class="col-md-3">
+        <label>@Localizer["SelectDays"]</label>
+        <select class="form-control"  @@change="onDaysChange($event)">
+           <option value="" disabled selected>@Localizer["SelectDays"]</option>
+           <option value="6">6 @Localizer["Days"]</option>
+           <option value="9">9 @Localizer["Days"]</option>
+           <option value="15">15 @Localizer["Days"]</option>
+           <option value="-1">@Localizer["ALL"]</option>
+        </select>
+    </div>
+
+    <div class="col-md-6">
+        <form asp-action="SelectCountry" asp-controller="OffersList" method="post">
+                        <div class="form-group d-flex  align-items-center">
+                <label for="country">@Localizer["SelectaCountry"]:</label>
+                <select id="country" class="form-control" style="width: 50%;" name="countryId">
+                    <option value="">-- Select Country --</option>
+                    @foreach (var country in countries)
+                    {   var isSelected = country.Id == selectedCountryId ? "selected" : "";
+                    if(country.Id == selectedCountryId)
+                    {
+                                        <option value="@country.Id" selected>@country.CountryName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@country.Id" >@country.CountryName</option>
+                                    }
+
+                    }
+                </select>
+                            <button type="submit" class="btn btn-primary" style="">@Localizer["Select"]</button> 
+            </div>
+             
+        </form>
+    </div>
+
+ 
+      
+   
+</div>
+
+</div> 
+</div>
+
+    <div class="box">
+        <div class="box-header">
+
+            <div class="dataTables_length">
+               
+
+
+
+                </div>
+                <div class="box-tools">
+                </div>
+            </div>
+            <div class="box-body" style=" padding-left: 5px; padding-right: 5px; padding-bottom: 20px">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="tblGeneratedOffers" class="table table-bordered table-striped datatable table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>@Localizer["No"]</th> 
+                                    <th>@Localizer["OfferID"]</th>
+                                    <th>@Localizer["CustomerName"]</th>
+                                    <th>@Localizer["GeneratedDate"]</th>
+                                    <th>@Localizer["ViewPDF"]</th>
+                                    <th style="width:20px">@Localizer["MakeCopy"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 0;
+                                    foreach(var offer in Model)
+                                    {
+                                        <tr>
+                                        <td>@(count+1)</td>
+                                        <td>@offer.OfferId</td>
+                                        <td>@(Html.Raw(offer.CustomerFirstname.Replace("'", "\\'"))) @(Html.Raw(offer.CustomerLastname.Replace("'", "\\'")))</td>
+                                        <td>@(offer.CreationDatetime.ToString("dd-MM-yyyy HH:mm"))</td>
+                                            <td>
+                                                <a href="@offer.PdfPath" target="_blank">@Localizer["ViewPDF"]</a>
+                                            </td>
+                                            <td>
+                                                <button @@click="makeCopy(@(serializer.Serialize(offer)))">@Localizer["CopyandEdit"]</button>
+                                            </td>
+
+                                        </tr>
+                                        @(count++)
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+@section scripts {
+
+<script>
+    var objCommon = new Common();
+    var LanguageUrl = '@currCul';
+    var app = new Vue({
+        el: '#appOffer',
+        data: {
+                offer: {
+                    Id: 0,
+                    CustomerCompanyName: '',
+                    SalespersonName: '',
+                    SalespersonPhoneNumber: '',
+                    SalespersonEmail: '',
+                    CustomerFirstname: '',
+                    CustomerLastname: '',
+                    CustomerAddress: '',
+                    CustomerCity: '',
+                    ProjectName: '',
+                    BranchID: 0,
+                    CountryId: '@selectedCountryId',
+                    OfferedItems: [{ ProductDescription: '', QTY: 1, PricePerUnitInclVAT: 0,  VATPercentage: 0 }],
+                    ValidUntil: '',
+                    RequiredPrepayment: 50,
+                    DeliveryTimeInWeeks: 1
+                },
+                OfferList: [],
+                AllCheckOffers: false,
+           Summary: {},
+
+            selectedMonth: new Date().getMonth() + 1,
+            selectedYear: new Date().getFullYear(),
+            months: [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ],
+            yearList: [],
+        },
+        mounted() {
+           this.LoadAllOffers( null, 3);
+        },
+            computed: {
+                isFormValid() {
+                    return this.offer.SalespersonName && this.offer.SalespersonPhoneNumber && this.offer.SalespersonEmail &&
+                        this.offer.CustomerFirstname && this.offer.CustomerLastname && this.offer.CustomerAddress &&
+                        this.offer.CustomerCity && this.offer.BranchID && this.offer.ValidUntil &&
+                        this.offer.OfferedItems.every(item => item.ProductDescription && item.QTY > 0 &&
+                            item.PricePerUnitInclVAT > 0 && item.VATPercentage >= 0 );
+                }
+            },
+        methods: {
+              LoadAllOffers($event, Days) {
+                        let dthis = this;
+                        param = {
+                            days: Days
+                        };
+
+
+                        objCommon.AjaxCall("/OffersList/Generated", $.param(param), "GET", true, function (d) {
+                       
+                            console.log(d);
+                            dthis.OfferList = d;
+
+                        }, $event == null ? "" : $event.currentTarget)
+
+                    },
+
+                        onDaysChange($event) {
+                            const days = $event.target.value; 
+                            this.LoadAllOffers($event, days); 
+                        },
+                makeCopy(offer) {
+
+                    offer
+                    localStorage.setItem('selectedOfferId', offer.offerId);
+                    window.location.href = `/`;
+                },
+                addItem() {
+                    this.offer.OfferedItems.push({ ProductDescription: '', QTY: 1, PricePerUnitInclVAT: 0, VATPercentage: 0 });
+                },
+                removeItem(index) {
+                    this.offer.OfferedItems.splice(index, 1);
+                },
+                defaultValidUntil() {
+                    const date = new Date();
+                    date.setDate(date.getDate() + 3);
+                    return date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+                },
+                calculateExclVAT(PricePerUnitInclVAT, VATPercentage)
+                {
+                    const exclVAT = PricePerUnitInclVAT / (1 + VATPercentage / 100);
+                    return Math.round(exclVAT * 100) / 100;
+                },
+
+  
+                updateExclVAT(item) {
+                    item.PricePerUnitExclVAT = this.calculateExclVAT(item.PricePerUnitInclVAT, item.VATPercentage);
+                },
+
+            populateYearDropdown() {
+                const currentYear = new Date().getFullYear();
+                const startYear = currentYear - 5;
+                const endYear = currentYear + 0;
+
+                for (let year = startYear; year <= endYear; year++) {
+                    this.yearList.push(year);
+                }
+            },
+            LoadPaymentData($event) {
+                 if (!objCommon.Validate("#filterData"))
+                                return;
+                let dthis = this;
+                 var param = {
+                            Year: this.selectedYear,
+                            Month: this.selectedMonth
+                        };
+
+                 objCommon.AjaxCall("/home/loadValues", $.param(param), "GET", true, function (d) {
+
+                             let arr =  d ;
+
+                            dthis.Summary = arr[0];
+                            console.log(dthis.Summary);
+
+                        }, $event == null ? "" : $event.currentTarget);
+
+            },
+
+
+        }
+    });
+
+    setTimeout(function () {
+        $("#leftmenu li").removeClass("active");
+            $("#lidashboard").addClass("active");
+    }, 200);
+</script>
+
+<script>
+    var objCommon = new Common();
+    $(document).ready(function () {
+
+
+
+
+
+             $("#leftmenu li").removeClass("active");
+            $("#offersLi").addClass("active");
+
+            $(".datatable").DataTable({
+                "lengthMenu": [
+                    [6, 10, 25, 50, -1],
+                    [6, 10, 25, 50, 'All']
+                ],
+                "pageLength": 6,
+                "language": {
+                    "url": LanguageUrl
+                }
+            });
+
+            $('#ignismyModal').on('hidden.bs.modal', function () {
+                window.location.reload();
+            });
+    });
+</script>
+
+
+}

@@ -1,0 +1,429 @@
+﻿@using OffersForCustomers.Models;
+@using OffersForCustomers.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IStringLocalizer<HomeController> Localizer
+
+
+ @{
+    string currCul = "";
+    string curCulName = "English"; // Default to English
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+
+    if (requestCulture.RequestCulture.Culture.Name == "de-GR")
+    {
+        curCulName = "German";
+        currCul = "https://cdn.datatables.net/plug-ins/2.1.8/i18n/de-DE.json";
+    }
+    else if (requestCulture.RequestCulture.Culture.Name == "sl-Sl")
+    {
+        curCulName = "Slovenian";
+        currCul = "https://cdn.datatables.net/plug-ins/1.12.1/i18n/sl.json";
+    }
+    else if (requestCulture.RequestCulture.Culture.Name == "it-IT")
+    {
+        curCulName = "Italian";
+        currCul = "https://cdn.datatables.net/plug-ins/2.1.8/i18n/it-IT.json";
+    }
+    }
+ 
+@model  OffersForCustomers.Model.InputLists;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int selectedCountryId = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("SelectedCountryId"));
+    var cnt = Model.CountryList.Find(c => c.Id == selectedCountryId);
+    decimal? defaultVAT = cnt?.DefaultVAT ;
+
+}
+
+<section class="content-header" >
+    <h1>
+        @Localizer["CreateOffer"]
+    </h1>
+    @*  <ol class="breadcrumb">
+         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li class="active">Dashboard</li>
+     </ol> *@
+</section>
+<!-- Main content -->
+
+ <section class="content" id="appDash">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="offerForm">
+                        <input type="hidden" v-model="offer.Id" />
+
+                        <!-- Company Name -->
+                        <div class="mb-3">
+                            <label for="companyName" class="form-label">@Localizer["CompanyName"]:</label>
+                            <input type="text" id="companyName" class="form-control" v-model="offer.CustomerCompanyName" placeholder=@Localizer["Optional"] />
+                        </div>
+
+                        <!-- Salesperson Details -->
+                        <div class="mb-4">
+                            <h5 class="text-primary">@Localizer["Salesperson Details"]</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="salespersonName" class="form-label">@Localizer["SalespersonName"]: <span class="text-danger">*</span></label>
+                                    <input type="text" id="salespersonName" class="form-control" v-model="offer.SalespersonName" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="salespersonPhoneNumber" class="form-label">@Localizer["SalespersonPhoneNumber"]: <span class="text-danger">*</span></label>
+                                    <input type="text" id="salespersonPhoneNumber" class="form-control" v-model="offer.SalespersonPhoneNumber" required />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="salespersonEmail" class="form-label">@Localizer["SalespersonEmail"]: <span class="text-danger">*</span></label>
+                                <input type="email" id="salespersonEmail" class="form-control" v-model="offer.SalespersonEmail" required />
+                            </div>
+                        </div>
+
+                        <!-- Customer Details -->
+                        <div class="mb-4">
+                            <h5 class="text-primary">@Localizer["CustomerDetails"]</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="customerFirstName" class="form-label">@Localizer["FirstName"]: <span class="text-danger">*</span></label>
+                                    <input type="text" id="customerFirstName" class="form-control" v-model="offer.CustomerFirstname" required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="customerLastName" class="form-label">@Localizer["LastName"]: <span class="text-danger">*</span></label>
+                                    <input type="text" id="customerLastName" class="form-control" v-model="offer.CustomerLastname" required />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="customerAddress" class="form-label">@Localizer["Address"]: <span class="text-danger">*</span></label>
+                                <input type="text" id="customerAddress" class="form-control" v-model="offer.CustomerAddress" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="customerCity" class="form-label">@Localizer["City"]: <span class="text-danger">*</span></label>
+                                <input type="text" id="customerCity" class="form-control" v-model="offer.CustomerCity" required />
+                            </div>
+                        </div>
+
+                        <!-- Project Name and Branch -->
+                        <div class="mb-4">
+                            <h5 class="text-primary">@Localizer["ProjectInformation"]</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="projectName" class="form-label">@Localizer["ProjectName"]:</label>
+                                    <input type="text" id="projectName" class="form-control" v-model="offer.ProjectName" placeholder=@Localizer["Optional"] />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label  class="form-label">@Localizer["Branch"]: <span class="text-danger">*</span></label>
+                                    <select v-model="offer.BranchID" class="form-control" required>
+                                        @if (Model.BranchList.Count > 0)
+                                        {
+                                            foreach (var branch in Model.BranchList)
+                                            {
+                                                <option id="@branch.Id" value="@branch.Id">@branch.BranchName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                 <div class="col-md-3 mb-3">
+                                    <label  class="form-label">@Localizer["Country"] <span class="text-danger">*</span></label>
+                                    <select v-model="offer.CountryId" @@change="SetVAT()"  class="form-control" required>
+                                        @if (Model.CountryList.Count > 0)
+                                        {
+                                            foreach (var country in Model.CountryList)
+                                            {
+                                                <option id="@country.Id" value="@country.Id">@country.CountryName</option>
+                                            }
+                                        }
+                                    </select>
+                                    <p style="color: red;">{{error}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Offered Items Section -->
+                        <div v-for="(item, index) in offer.OfferedItems" :key="index" class="item-container mb-3 border rounded p-3">
+                            <h4>@Localizer["Item"] {{ index + 1 }}</h4>
+                            <button type="button" class="btn btn-danger btn-sm mb-2" v-on:click="removeItem(index)">✖ @Localizer["RemoveItem"]</button>
+
+                            <div class="mb-3">
+                                <label for="productDescription-{{ index }}" class="form-label">@Localizer["ProductDescription"]: <span class="text-danger">*</span></label>
+                                <input type="text" id="productDescription-{{ index }}" class="form-control" v-model="item.ProductDescription" required />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="quantity-{{ index }}" class="form-label">@Localizer["Quantity"]: <span class="text-danger">*</span></label>
+                                    <input type="number" id="quantity-{{ index }}" class="form-control" v-model.number="item.QTY" required min="1" step="0.01" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="priceInclVAT-{{ index }}" class="form-label">@Localizer["Price(Incl.VAT)"]: <span class="text-danger">*</span></label>
+                                    <input type="number" id="priceInclVAT-{{ index }}" class="form-control" v-model.number="item.PricePerUnitInclVAT" @@input="updateExclVAT(item)" required step="0.01" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="vatPercentage-{{ index }}" class="form-label">@Localizer["VAT(%)"]: <span class="text-danger">*</span></label>
+                                    <input type="number" id="vatPercentage-{{ index }}" class="form-control" v-model.number="item.VATPercentage" @@input="updateExclVAT(item)" required />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="priceExclVAT-{{ index }}" class="form-label">@Localizer["Price(Excl.VAT)"]:</label>
+                                <input type="text" id="priceExclVAT-{{ index }}" class="form-control" :value="calculateExclVAT(item.PricePerUnitInclVAT, item.VATPercentage)" readonly />
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-success mb" v-on:click="addItem">+ @Localizer["AddItem"]</button>
+
+                        <!-- Additional Information -->
+                        <div class="mb-4">
+                            <h5 class="text-primary">@Localizer["AdditionalInformation"]</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="validUntil" class="form-label">@Localizer["ValidUntil"]: <span class="text-danger">*</span></label>
+                                    <input type="date" id="validUntil" class="form-control" v-model="offer.ValidUntil" required />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="requiredPrepayment" class="form-label">@Localizer["RequiredPrepayment(%)"]: <span class="text-danger">*</span></label>
+                                    <input type="number" id="requiredPrepayment" class="form-control" v-model.number="offer.RequiredPrepayment" required />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="deliveryTimeInWeeks" class="form-label">@Localizer["DeliveryTime"]: <span class="text-danger">*</span></label>
+                                    <input type="number" id="deliveryTimeInWeeks" class="form-control" v-model.number="offer.DeliveryTimeInWeeks" required min="1" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Generate PDF Button -->
+                        <button type="button" class="btn btn-success" v-on:click="insert($event)" :disabled="!isFormValid">@Localizer["GeneratePDF"]</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.row -->
+</section><!-- /.content --> 
+
+
+@section scripts {
+
+<script>
+    var objCommon = new Common();
+    var LanguageUrl = '@currCul';
+    var app = new Vue({
+        el: '#appDash',
+        data: {
+                offer: {
+                    OfferId: 0,
+                    CustomerCompanyName: '',
+                    SalespersonName: '',
+                    SalespersonPhoneNumber: '',
+                    SalespersonEmail: '',
+                    CustomerFirstname: '',
+                    CustomerLastname: '',
+                    CustomerAddress: '',
+                    CustomerCity: '',
+                    ProjectName: '',
+                    BranchID: 0,
+                    CountryId: 0,
+                    OfferedItems: [{ ProductDescription: '', QTY: 1, PricePerUnitInclVAT: 0,  VATPercentage: 0 }],
+                    ValidUntil: '',
+                    RequiredPrepayment: 50,
+                    DeliveryTimeInWeeks: 1
+                },
+            CountryList: @Html.Raw(Json.Serialize(Model.CountryList)),
+            DefaultVAT: 0,
+            error: '',
+                    Summary: {},
+
+            selectedMonth: new Date().getMonth() + 1,
+            selectedYear: new Date().getFullYear(),
+            months: [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ],
+            yearList: [],
+        },
+        mounted() {
+
+                const offerId = localStorage.getItem('selectedOfferId'); // Get offer ID from local storage
+
+           
+                if (offerId) {
+                    this.fetchOfferDetails(null, offerId);
+                    localStorage.removeItem('selectedOfferId'); // Clear the ID after use
+                }
+                else {
+                    console.error('No offer ID found in local storage');
+                }
+   
+            this.populateYearDropdown();
+             this.LoadPaymentData();
+                this.offer.ValidUntil = this.defaultValidUntil();
+        },
+         
+            computed: {
+                isFormValid() {
+                    return this.offer.SalespersonName && this.offer.SalespersonPhoneNumber && this.offer.SalespersonEmail &&
+                        this.offer.CustomerFirstname && this.offer.CustomerLastname && this.offer.CustomerAddress &&
+                        this.offer.CustomerCity && this.offer.BranchID && this.offer.ValidUntil && this.offer.CountryId &&
+                        this.offer.OfferedItems.every(item => item.ProductDescription && item.QTY > 0 &&
+                            item.PricePerUnitInclVAT > 0 && item.VATPercentage >= 0 );
+                },
+              
+
+            },
+        methods: {
+                addItem() {
+                if (this.offer.CountryId > 0) { 
+                    this.offer.OfferedItems.push({ ProductDescription: '', QTY: 1, PricePerUnitInclVAT: 0, VATPercentage: this.DefaultVAT, });
+                }
+                else
+                {
+                    this.error = 'Select a Country';
+                }
+                
+                },
+                removeItem(index) {
+                    this.offer.OfferedItems.splice(index, 1);
+                },
+                defaultValidUntil() {
+                    const date = new Date();
+                    date.setDate(date.getDate() + 3);
+                    return date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+                },
+                calculateExclVAT(PricePerUnitInclVAT, VATPercentage)
+                {
+                    const exclVAT = PricePerUnitInclVAT / (1 + VATPercentage / 100);
+                    return Math.round(exclVAT * 100) / 100;
+                },
+                SetVAT() {
+                    const selCountry = this.offer.CountryId;
+
+                    console.log(selCountry);
+                    const country = this.CountryList.filter(c => c.Id == selCountry);
+                    this.offer.OfferedItems.forEach(item => item.VATPercentage = country[0].DefaultVAT);
+                  
+                    this.DefaultVAT = country[0].DefaultVAT;
+                    this.error = '';
+           
+
+                },
+               
+                insert($event) {
+
+                    $event.preventDefault();
+
+                    if (!objCommon.Validate("#offerForm"))
+                        return;
+
+                    this.offer.OfferId = Number(this.offer.OfferId);
+                    this.offer.CountryId = Number(this.offer.CountryId);
+             
+
+
+                    var param = { ...this.offer };
+
+                    console.log(param);
+
+                    objCommon.AjaxCall("/home/SavePdf", JSON.stringify(param), "POST", true, function (response) {
+                        console.log(response);
+                        if (response.pdfUrl) {
+                            window.open(response.pdfUrl, '_blank');
+                           
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 200);
+
+
+                            
+                        } else {
+                            console.error('PDF URL not returned in the response');
+                        }
+
+                    }, $event.currentTarget)
+                },
+                updateExclVAT(item) {
+                    item.PricePerUnitExclVAT = this.calculateExclVAT(item.PricePerUnitInclVAT, item.VATPercentage);
+                },
+                fetchOfferDetails($event, offerId) {
+                    dthis = this;
+                   
+                    const param = { 
+                        id: offerId 
+                    };
+                    objCommon.AjaxCall("home/editOffer", $.param(param), "GET", true, function (d) {
+                
+                        console.log(d);
+                        d.ValidUntil = d.ValidUntil.split('T')[0];
+                        dthis.offer = { ...d }; // Spread operator to copy properties
+                        console.log(dthis.offer)
+                    }, $event == null ? "" : $event.currentTarget);
+                },
+
+            populateYearDropdown() {
+                const currentYear = new Date().getFullYear();
+                const startYear = currentYear - 5;
+                const endYear = currentYear + 0;
+
+                for (let year = startYear; year <= endYear; year++) {
+                    this.yearList.push(year);
+                }
+            },
+            LoadPaymentData($event) {
+                 if (!objCommon.Validate("#filterData"))
+                                return;
+                let dthis = this;
+                 var param = {
+                            Year: this.selectedYear,
+                            Month: this.selectedMonth
+                        };
+
+                 objCommon.AjaxCall("/home/loadValues", $.param(param), "GET", true, function (d) {
+
+                             let arr =  d ;
+
+                            dthis.Summary = arr[0];
+                            console.log(dthis.Summary);
+
+                        }, $event == null ? "" : $event.currentTarget);
+
+            },
+
+
+        }
+    });
+
+    setTimeout(function () {
+        $("#leftmenu li").removeClass("active");
+            $("#lidashboard").addClass("active");
+    }, 200);
+</script>
+
+<script>
+    var objCommon = new Common();
+    $(document).ready(function () {
+
+
+        $("#leftmenu li").removeClass("active");
+        $("#lidashboard").addClass("active");
+
+        $(".datatable").DataTable({
+            "lengthMenu": [
+                [6, 10, 25, 50, -1],
+                [6, 10, 25, 50, 'All']
+            ],
+            "pageLength": 6,
+             "language": {
+                    "url": LanguageUrl
+                }
+        });
+
+        $('#ignismyModal').on('hidden.bs.modal', function () {
+            window.location.reload();
+        });
+    });
+</script>
+
+
+}

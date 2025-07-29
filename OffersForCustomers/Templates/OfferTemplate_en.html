@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Offer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+
+        h1 {
+            font-size: 30px; /* Larger size for the main header */
+        }
+
+        h2 {
+            font-size: 26px; /* Size for sub-headers */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+        .padding-left{
+            padding-left: 500px;
+        }
+        .right-align {
+            text-align: right; /* Align text to the right */
+            margin-left: auto; /* Push the text to the right */
+            margin-right: 0; /* Reset right margin */
+        }
+    </style>
+</head>
+<body>
+    <img src="/dist/img/kacnd-logo.png" width="225" class="right-align"/>
+    <p><strong>Company:</strong> {{Customer_Company_Name}}</p>
+    <p>{{Customer_Firstname}} {{Customer_Lastname}}</p>
+    <p><strong>Address:</strong> {{Customer_Address}}</p>
+    <p><strong>City:</strong> {{Customer_City}}</p>
+    <div class="padding-left">
+        <p><strong>Branch:</strong> {{Branch_Name}}</p>
+        <p><strong>Date:</strong> {{Creation_datetime}}</p>
+        <p><strong>Your Advisor:</strong> {{Salesperson_Name}}</p>
+        <p><strong>Phone:</strong> {{Salesperson_phone_number}}</p>
+        <p><strong>Email:</strong> {{Salesperson_email}}</p>
+    </div>
+    <h2>Offer for Your Project: {{Project_Name}}</h2>
+
+    <p>Dear <strong>{{Customer_Firstname}} {{Customer_Lastname}}</strong>,</p>
+    <p>We are pleased to hear about your interest in our interior design programs. Based on your conversation with your advisor {{Salesperson_Name}}, we are happy to present the following proposal according to your specifications:</p>
+
+    <table>
+        <tr>
+            <th>Item / Description</th>
+            <th>Quantity</th>
+            <th>Price per Unit</th>
+            <th>VAT Rate</th>
+            <th>Amount Excl. VAT</th>
+            <th>Amount Incl. VAT</th>
+        </tr>
+        {{Items}}
+        <!--{{#each Items}}
+        <tr>
+            <td>{{this.Product_Description}}</td>
+            <td>{{this.QTY}}</td>
+            <td>{{this.Price_per_unit_incl_VAT}} €</td>
+            <td>{{this.VAT_%}} %</td>
+            <td>{{this.Price_per_unit_excl_VAT}} €</td>
+            <td>{{this.Price_per_unit_incl_VAT}} €</td>
+        </tr>
+        {{/each}}-->
+        ow
+        <tr rowspan="2"><td colspan="6"></td></tr>
+        <tr><td colspan="6"></td></tr>
+
+        <tr>
+            <td colspan="4" class="total">TOTAL Excl. VAT:</td>
+            <td colspan="2">{{TotalExclVAT}} €</td>
+
+        </tr>
+        <tr>
+            <td colspan="4" class="total">Total VAT %):</td>
+            <td colspan="2">{{TotalVAT}} €</td>
+
+        </tr>
+        <tr>
+            <td colspan="4" class="total">TOTAL Incl. VAT:</td>
+            <td colspan="2">{{TotalAmount}} €</td>
+
+        </tr>
+    </table>
+    <div class="right-align">
+        <p>This offer is valid until <strong>{{Valid_Until}}</strong>.</p>
+        </div>
+        <p>We hope this offer meets your needs. If you have any additional questions or requests, please feel free to contact us at the phone number provided above. We look forward to your esteemed order and assure you of prompt and professional processing of your order.</p>
+
+        <p><strong>Best regards,</strong></p>
+        <p>{{Salesperson_Name}}</p>
+
+        <p><strong>Payment Terms:</strong> <strong>{{Required_Prepayment}} %</strong> prepayment upon order</p>
+        <p><strong>Expected Delivery Time:</strong> {{Delivery_Time_in_Weeks}} weeks after order</p>
+</body>
+</html>

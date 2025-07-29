@@ -1,0 +1,16 @@
+﻿@model List<OffersForCustomers.Models.Countries>
+@{
+}
+<form asp-action="SelectCountry" asp-controller="Home" method="post">
+    <div>
+        <label for="country">Select a country:</label>
+        <select id="country" name="countryId">
+            <option value="">-- Select Country --</option>
+            @foreach (var country in Model)
+            {
+                <option value="@country.Id">@country.CountryName</option>
+            }
+        </select>
+    </div>
+    <button type="submit">Save Country</button>
+</form>

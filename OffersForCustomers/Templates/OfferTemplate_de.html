@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Angebot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+
+        h1 {
+            font-size: 30px; /* Größere Größe für die Hauptüberschrift */
+        }
+
+        h2 {
+            font-size: 26px; /* Größe für Unterüberschriften */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .padding-left {
+            padding-left: 500px;
+        }
+
+        .right-align {
+            text-align: right; /* Text nach rechts ausrichten */
+            margin-left: auto; /* Text nach rechts schieben */
+            margin-right: 0; /* Rechten Rand zurücksetzen */
+        }
+    </style>
+</head>
+<body>
+    <img src="/dist/img/kacnd-logo.png" width="225" class="right-align" />
+    <p><strong>Unternehmen:</strong> {{Customer_Company_Name}}</p>
+    <p>{{Customer_Firstname}} {{Customer_Lastname}}</p>
+    <p><strong>Adresse:</strong> {{Customer_Address}}</p>
+    <p><strong>Stadt:</strong> {{Customer_City}}</p>
+    <div class="padding-left">
+        <p><strong>Filiale:</strong> {{Branch_Name}}</p>
+        <p><strong>Datum:</strong> {{Creation_datetime}}</p>
+        <p><strong>Ihr Berater:</strong> {{Salesperson_Name}}</p>
+        <p><strong>Telefon:</strong> {{Salesperson_phone_number}}</p>
+        <p><strong>E-Mail:</strong> {{Salesperson_email}}</p>
+    </div>
+    <h2>Angebot für Ihr Projekt: {{Project_Name}}</h2>
+
+    <p>Sehr geehrte(r) <strong>{{Customer_Firstname}} {{Customer_Lastname}}</strong>,</p>
+    <p>Wir freuen uns über Ihr Interesse an unseren Innenarchitekturprogrammen. Basierend auf Ihrem Gespräch mit Ihrem Berater {{Salesperson_Name}} freuen wir uns, Ihnen folgendes Angebot gemäß Ihren Spezifikationen zu unterbreiten:</p>
+
+    <table>
+        <tr>
+            <th>Artikel / Beschreibung</th>
+            <th>Stückzahl</th>
+            <th>Preis pro Einheit</th>
+            <th>Mehrwertsteuersatz</th>
+            <th>Betrag ohne MwSt.</th>
+            <th>Betrag mit MwSt.</th>
+        </tr>
+        {{Items}}
+        <!--{{#each Items}}-->
+        <!--
+        <tr>
+            <td>{{this.Product_Description}}</td>
+            <td>{{this.QTY}}</td>
+            <td>{{this.Price_per_unit_incl_VAT}} €</td>
+            <td>{{this.VAT_%}} %</td>
+            <td>{{this.Price_per_unit_excl_VAT}} €</td>
+            <td>{{this.Price_per_unit_incl_VAT}} €</td>
+        </tr>
+        -->
+        {{/each}}
+        <tr rowspan="2"><td colspan="6"></td></tr>
+        <tr><td colspan="6"></td></tr>
+
+        <tr>
+            <td colspan="4" class="total">GESAMT ohne MwSt.:</td>
+            <td colspan="2">{{TotalExclVAT}} €</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="total">Gesamt MwSt. (%):</td>
+            <td colspan="2">{{TotalVAT}} €</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="total">GESAMT mit MwSt.:</td>
+            <td colspan="2">{{TotalAmount}} €</td>
+        </tr>
+    </table>
+    <div class="right-align">
+        <p>Dieses Angebot ist gültig bis <strong>{{Valid_Until}}</strong>.</p>
+    </div>
+    <p>Wir hoffen, dass dieses Angebot Ihren Bedürfnissen entspricht. Wenn Sie zusätzliche Fragen oder Wünsche haben, zögern Sie bitte nicht, uns unter der angegebenen Telefonnummer zu kontaktieren. Wir freuen uns auf Ihre geschätzte Bestellung und versichern Ihnen eine zügige und professionelle Bearbeitung Ihrer Bestellung.</p>
+
+    <p><strong>Mit freundlichen Grüßen,</strong></p>
+    <p>{{Salesperson_Name}}</p>
+
+    <p><strong>Zahlungsbedingungen:</strong> <strong>{{Required_Prepayment}} %</strong> Anzahlung bei Bestellung</p>
+    <p><strong>Voraussichtliche Lieferzeit:</strong> {{Delivery_Time_in_Weeks}} Wochen nach Bestellung</p>
+</body>
+</html>
