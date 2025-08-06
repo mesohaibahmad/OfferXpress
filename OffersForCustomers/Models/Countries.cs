@@ -1,4 +1,4 @@
-﻿namespace OffersForCustomers.Models
+﻿namespace OfferXpress.Models
 {
     public class Countries
     {

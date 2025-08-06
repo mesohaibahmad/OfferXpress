@@ -1,10 +1,10 @@
-﻿@using OffersForCustomers.Models;
-@using OffersForCustomers.Controllers
+﻿@using OfferXpress.Models;
+@using OfferXpress.Controllers
 @using Microsoft.Extensions.Localization
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using System.Globalization
-@using OffersForCustomers.Services
+@using OfferXpress.Services
 @using Nancy.Json
 @inject IStringLocalizer<HomeController> Localizer
 @inject IHttpContextAccessor HttpContextAccessor
@@ -36,7 +36,7 @@
  @{
      var serializer = new JavaScriptSerializer();
  }
-@model  List<OffersForCustomers.Models.Offers>;
+@model  List<OfferXpress.Models.Offers>;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 

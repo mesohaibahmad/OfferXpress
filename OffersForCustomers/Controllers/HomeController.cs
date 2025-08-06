@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using OffersForCustomers.Models;
-using OffersForCustomers.Model;
-using OffersForCustomers.Services;
+using OfferXpress.Models;
+using OfferXpress.Model;
+using OfferXpress.Services;
 using Microsoft.Extensions.Localization;
 using System;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
 
-namespace OffersForCustomers.Controllers
+namespace OfferXpress.Controllers
 {
     public class HomeController : Controller
     {

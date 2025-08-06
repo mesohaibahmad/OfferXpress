@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OffersForCustomers.Models
+namespace OfferXpress.Models
 {
     public class OfferedItemRows
     {

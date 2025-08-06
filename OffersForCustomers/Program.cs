@@ -1,6 +1,6 @@
-using OffersForCustomers.Models;
+using OfferXpress.Models;
 using Microsoft.EntityFrameworkCore;
-using OffersForCustomers.Services;
+using OfferXpress.Services;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using DinkToPdf.Contracts;
@@ -89,7 +89,7 @@ builder.WebHost.UseUrls($"http://*:{port}");
 //}
 
 
-builder.Services.AddDbContext<OffersForCustomersDbContext>(options =>
+builder.Services.AddDbContext<OfferXpressDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr"));
 });

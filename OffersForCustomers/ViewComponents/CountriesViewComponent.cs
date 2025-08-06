@@ -1,7 +1,7 @@
 ﻿// Location: YourProject/Components/CountriesViewComponent.cs
 
 using Microsoft.AspNetCore.Mvc;
-using OffersForCustomers.Services;
+using OfferXpress.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,6 +1,6 @@
-﻿using OffersForCustomers.Models;
+﻿using OfferXpress.Models;
 
-namespace OffersForCustomers.Model
+namespace OfferXpress.Model
 {
     public class InputLists
     {

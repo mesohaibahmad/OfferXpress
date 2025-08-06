@@ -1,10 +1,10 @@
-﻿namespace OffersForCustomers.Models
+﻿namespace OfferXpress.Models
 {
     using Microsoft.EntityFrameworkCore;
 
-    public class OffersForCustomersDbContext : DbContext
+    public class OfferXpressDbContext : DbContext
     {
-        public OffersForCustomersDbContext(DbContextOptions<OffersForCustomersDbContext> options)
+        public OfferXpressDbContext(DbContextOptions<OfferXpressDbContext> options)
             : base(options)
         {
         }

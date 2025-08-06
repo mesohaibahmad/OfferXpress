@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OffersForCustomers.Models; // Assuming you have your models in this namespace
+using OfferXpress.Models; // Assuming you have your models in this namespace
 
-namespace OffersForCustomers.Controllers
+namespace OfferXpress.Controllers
 {
     [Route("Countries")]
     public class CountryController : Controller
     {
-        private readonly OffersForCustomersDbContext _context;
+        private readonly OfferXpressDbContext _context;
 
-        public CountryController(OffersForCustomersDbContext context)
+        public CountryController(OfferXpressDbContext context)
         {
             _context = context;
         }

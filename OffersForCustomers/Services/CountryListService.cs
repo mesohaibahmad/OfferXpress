@@ -1,9 +1,9 @@
 ﻿using DinkToPdf.Contracts;
 using Microsoft.EntityFrameworkCore;
-using OffersForCustomers.Model;
-using OffersForCustomers.Models;
+using OfferXpress.Model;
+using OfferXpress.Models;
 
-namespace OffersForCustomers.Services
+namespace OfferXpress.Services
 {
     public interface ICountryListService
     {
@@ -13,11 +13,11 @@ namespace OffersForCustomers.Services
     }
     public class CountryListService : ICountryListService
     {
-        private readonly OffersForCustomersDbContext dBContext;
+        private readonly OfferXpressDbContext dBContext;
         private readonly IWebHostEnvironment environment;
         public IConfiguration Configuration { get; set; }
  
-        public CountryListService(OffersForCustomersDbContext _dbContext, IWebHostEnvironment _environment
+        public CountryListService(OfferXpressDbContext _dbContext, IWebHostEnvironment _environment
             , IConfiguration configuration)
         {
             dBContext = _dbContext;

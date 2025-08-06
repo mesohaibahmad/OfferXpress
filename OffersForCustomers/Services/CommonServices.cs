@@ -1,5 +1,5 @@
 ﻿
-using OffersForCustomers.Models;
+using OfferXpress.Models;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Threading.Tasks;
@@ -7,14 +7,14 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using DinkToPdf;
-using OffersForCustomers.Model;
+using OfferXpress.Model;
 using DinkToPdf.Contracts;
 using System.Text;
 using System.Collections;
 ////using Microsoft.Data.SqlClient;
-//using OffersForCustomers.DAL;
+//using OfferXpress.DAL;
 
-namespace OffersForCustomers.Services
+namespace OfferXpress.Services
 {
     public interface ICommonServices
     {
@@ -26,11 +26,11 @@ namespace OffersForCustomers.Services
     }
     public class CommonServices : ICommonServices
     {
-        private readonly OffersForCustomersDbContext dBContext;
+        private readonly OfferXpressDbContext dBContext;
         private readonly IWebHostEnvironment environment;
         public IConfiguration Configuration { get; set; }
         private readonly IConverter _converter;
-        public CommonServices(OffersForCustomersDbContext _dbContext, IWebHostEnvironment _environment
+        public CommonServices(OfferXpressDbContext _dbContext, IWebHostEnvironment _environment
             , IConfiguration configuration, IConverter converter)
         {
             dBContext = _dbContext;

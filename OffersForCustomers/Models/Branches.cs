@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Metrics;
 
-namespace OffersForCustomers.Models
+namespace OfferXpress.Models
 {
     public class Branches
     {
