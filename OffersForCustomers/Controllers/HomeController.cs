@@ -9,9 +9,11 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OfferXpress.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

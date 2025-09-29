@@ -1,8 +1,9 @@
 ﻿namespace OfferXpress.Models
 {
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
-    public class OfferXpressDbContext : DbContext
+    public class OfferXpressDbContext : IdentityDbContext<User>
     {
         public OfferXpressDbContext(DbContextOptions<OfferXpressDbContext> options)
             : base(options)

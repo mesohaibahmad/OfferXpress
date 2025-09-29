@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Log in</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="~/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/dist/css/AdminLTE.css">
+    <link href="~/scripts/toastr.css" rel="stylesheet" />
+    <link href="~/scripts/validationEngine.jquery.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/plugins/iCheck/square/blue.css">
+    <link rel="stylesheet" href="~/plugins/sweetalert2/sweetalert2.min.css">
+    <link rel="icon" type="image/x-icon" href="~/images/racas_favicon.ico">
+</head>
+<body class="hold-transition register-page">
+    <div class="register-box" id="registerapp">
+        <div class="register-logo">
+            <img src="~/dist/img/kacnd-logo.png" style="width:250px" />
+        </div>
+        <!-- /.register-logo -->
+        <div class="register-box-body">
+            <p class="register-box-msg">Sign in to start your session</p>
+
+            <form id="registerform">
+                <!-- Prevent default form submission -->
+                <div class="form-group has-feedback">
+                    <input type="email" class="form-control" placeholder="Email" @@keyup.enter="register" v-model="Email">
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="Password" @@keyup.enter="register" v-model="Password">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="Confirm Password" @@keyup.enter="register" v-model="ConfirmPassword">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <a href="@Url.Action("ForgotPassword", "Users")" style="cursor:pointer">Forgot my password</a>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-4">
+                        <a href="@Url.Action("Login", "Account")" style="cursor:pointer">LogIn</a>
+                    </div>
+
+                    <!-- /.col -->
+                </div>
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat" v-on:click="register($event)">Register</button>
+                    </div>
+
+                    <!-- /.col -->
+                </div>
+            </form>
+
+            @*   <form id="registerform" @@submit.prevent="register">
+            <!-- Prevent default form submission -->
+            <div class="form-group has-feedback">
+            <input type="text" class="form-control" placeholder="UserName"  v-model="UserName">
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+            <input type="password" class="form-control" placeholder="Password"  v-model="Password">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+            <div class="col-xs-8">
+            <a href="@Url.Action("ForgotPassword", "Users")" style="cursor:pointer">Forgot my password</a>
+            </div>
+            <!-- /.col -->
+            <div class="col-xs-4">
+            <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+            </div>
+
+            <!-- /.col -->
+            </div>
+            </form>  *@
+
+            @*<a href="#">I forgot my password</a><br>*@
+        </div>
+    </div>
+    <script src="~/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/plugins/iCheck/icheck.min.js"></script>
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+    <script src="~/scripts/jquery.validationEngine.js"></script>
+    <script src="~/scripts/jquery.validationEngine-en.js"></script>
+    <script src="~/scripts/toastr.js"></script>
+    <script src="~/js/jquery.common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        let lastInputEvent = null;
+
+        // Track clicks
+        document.addEventListener('click', (e) => {
+            lastInputEvent = e;
+        }, true);
+
+        // Track Enter key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                lastInputEvent = e;
+            }
+        }, true);
+    </script>
+
+    <script>
+        var objCommon = new Common();
+        $(document).ready(function () {
+            var app = new Vue({
+                el: '#registerapp',
+                data: {
+                    Email: "",
+                    Password: "",
+                    ConfirmPassword: ""
+                },
+                methods: {
+                    register($event) {
+
+                        if (!objCommon.Validate("#registerform"))
+                            return;
+
+                        if (this.Password !== this.ConfirmPassword) {
+                            Swal.fire({
+                                title: "Validation Error",
+                                text: "Password and Confirm Password do not match.",
+                                icon: "warning"
+                            });
+                            return;
+                        }
+
+
+                        var param = {
+                            Email: this.Email,
+                            Password: this.Password,
+                            ConfirmPassword: this.Password
+                        }
+
+
+                        console.log(param);
+
+                        objCommon.AjaxCall("/Account/register", JSON.stringify(param), "POST", true, function (response) {
+                            if(response.success != false)
+                            {
+                            Swal.fire({
+                                title: "Success!",
+                                text: "You are logged in successfully!",
+                                icon: "success"
+                            });
+
+                            window.location.href = '@Url.Action("Requests", "Payments")';
+                            }
+                            else{
+                                    Swal.fire({
+                                title: "register Failed!",
+                                text: response.message,
+                                icon: "error"
+                            });
+                            }
+                                }, $event == null?"": $event.currentTarget);
+                    },
+                    async logout() {
+                        // Logout logic can be implemented here
+                    }
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+        });
+
+    </script>
+</body>
+</html>
+

@@ -94,6 +94,32 @@ builder.Services.AddDbContext<OfferXpressDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr"));
 });
 
+builder.Services.AddDefaultIdentity<User>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 4;
+    // Add more password/security policies as needed
+})
+.AddEntityFrameworkStores<OfferXpressDbContext>();
+
+
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+});
+
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";          // ?? Custom login path
+    options.AccessDeniedPath = "/Account/AccessDenied"; // Optional
+});
+
+
+
 var app = builder.Build();
 
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
@@ -105,10 +131,14 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 
+
+
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
@@ -116,5 +146,7 @@ app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

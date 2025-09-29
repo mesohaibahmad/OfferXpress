@@ -131,6 +131,20 @@
 
                             }
                         </li>
+
+                        <li class="nav-item">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <form method="post" asp-controller="Account" asp-action="Logout">
+                                    <button type="submit">Logout</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            }
+                        </li>
                     </ul>
                 </div>
             </nav>
